@@ -5,10 +5,10 @@ pragma experimental ABIEncoderV2;
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { BlockContext } from "./base/BlockContext.sol";
 import { IPriceFeed } from "./interface/IPriceFeed.sol";
-import { IStdReference } from "./interface/bandProtocol/IStdReference.sol";
+import { IDIAOracleV2 } from "./interface/dia/IDIAOracleV2.sol";
 import { CachedTwap } from "./twap/CachedTwap.sol";
 
-contract BandPriceFeed is IPriceFeed, BlockContext, CachedTwap {
+contract DiaPriceFeed is IPriceFeed, BlockContext, CachedTwap {
     using Address for address;
 
     //
@@ -16,37 +16,40 @@ contract BandPriceFeed is IPriceFeed, BlockContext, CachedTwap {
     //
     string public constant QUOTE_ASSET = "USD";
 
-    string public baseAsset;
-    IStdReference public stdRef;
+    IDIAOracleV2 public oracle;
+    string public oracleKey;
 
     //
     // EXTERNAL NON-VIEW
     //
 
     constructor(
-        IStdReference stdRefArg,
-        string memory baseAssetArg,
+        IDIAOracleV2 oracleArg,
+        string memory oracleKeyArg,
         uint80 cacheTwapInterval
     ) CachedTwap(cacheTwapInterval) {
-        // BPF_ANC: Reference address is not contract
-        require(address(stdRefArg).isContract(), "BPF_ANC");
+        // DPF_ANC: Reference address is not contract
+        require(address(oracleArg).isContract(), "DPF_ANC");
 
-        stdRef = stdRefArg;
-        baseAsset = baseAssetArg;
+        oracle = oracleArg;
+        oracleKey = oracleKeyArg;
     }
+
+
+    function getValue(string memory key) external view returns (uint128, uint128);
 
     /// @dev anyone can help update it.
     function update() external {
-        IStdReference.ReferenceData memory bandData = _getReferenceData();
-        _update(bandData.rate, bandData.lastUpdatedBase);
+        (uint128 value, uint128 timestamp) = _getOracleData();
+        _update(value, timestamp);
     }
 
     function cacheTwap(uint256 interval) external override returns (uint256) {
-        IStdReference.ReferenceData memory latestBandData = _getReferenceData();
+        (uint128 value, uint128 timestamp) = _getOracleData();
         if (interval == 0) {
-            return latestBandData.rate;
+            return value;
         }
-        return _cacheTwap(interval, latestBandData.rate, latestBandData.lastUpdatedBase);
+        return _cacheTwap(interval, value, timestamp);
     }
 
     //
@@ -54,11 +57,11 @@ contract BandPriceFeed is IPriceFeed, BlockContext, CachedTwap {
     //
 
     function getPrice(uint256 interval) public view override returns (uint256) {
-        IStdReference.ReferenceData memory latestBandData = _getReferenceData();
+        (uint128 value, uint128 timestamp) = _getOracleData();
         if (interval == 0) {
-            return latestBandData.rate;
+            return value;
         }
-        return _getCachedTwap(interval, latestBandData.rate, latestBandData.lastUpdatedBase);
+        return _getCachedTwap(interval, value, timestamp);
     }
 
     //
@@ -66,24 +69,22 @@ contract BandPriceFeed is IPriceFeed, BlockContext, CachedTwap {
     //
 
     function decimals() external pure override returns (uint8) {
-        // We assume Band Protocol always has 18 decimals
-        // https://docs.bandchain.org/band-standard-dataset/using-band-dataset/using-band-dataset-evm.html
-        return 18;
+        // We assume DIA always has 8 decimals
+        // https://github.com/diadata-org/diadata/blob/f342b69a8f69c3b6de1948dcefa87508fa6b9214/cmd/blockchain/ethereum/diaOracleV2Service/main.go#L148
+        return 8;
     }
 
     //
     // INTERNAL VIEW
     //
 
-    function _getReferenceData() internal view returns (IStdReference.ReferenceData memory) {
-        IStdReference.ReferenceData memory bandData = stdRef.getReferenceData(baseAsset, QUOTE_ASSET);
-        // BPF_TQZ: timestamp for quote is zero
-        require(bandData.lastUpdatedQuote > 0, "BPF_TQZ");
-        // BPF_TBZ: timestamp for base is zero
-        require(bandData.lastUpdatedBase > 0, "BPF_TBZ");
-        // BPF_IP: invalid price
-        require(bandData.rate > 0, "BPF_IP");
+    function _getOracleData() internal view returns (uint128, uint128) {
+        (uint128 value, uint128 timestamp) = oracle.getValue(oracleKey);
+        // DPF_TZ: timestamp is zero
+        require(timestamp > 0, "DPF_TZ");
+        // DPF_IP: invalid price
+        require(value > 0, "DPF_IP");
 
-        return bandData;
+        return (value, timestamp);
     }
 }
