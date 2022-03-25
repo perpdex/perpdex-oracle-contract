@@ -35,9 +35,6 @@ contract DiaPriceFeed is IPriceFeed, BlockContext, CachedTwap {
         oracleKey = oracleKeyArg;
     }
 
-
-    function getValue(string memory key) external view returns (uint128, uint128);
-
     /// @dev anyone can help update it.
     function update() external {
         (uint128 value, uint128 timestamp) = _getOracleData();
@@ -70,7 +67,7 @@ contract DiaPriceFeed is IPriceFeed, BlockContext, CachedTwap {
 
     function decimals() external pure override returns (uint8) {
         // We assume DIA always has 8 decimals
-        // https://github.com/diadata-org/diadata/blob/f342b69a8f69c3b6de1948dcefa87508fa6b9214/cmd/blockchain/ethereum/diaOracleV2Service/main.go#L148
+        // https://github.com/diadata-org/diadata/blob/master/cmd/blockchain/ethereum/diaOracleV2Service/main.go#L148
         return 8;
     }
 
