@@ -53,7 +53,7 @@ contract DiaPriceFeed is IPriceFeed, BlockContext, CachedTwap {
     // EXTERNAL VIEW
     //
 
-    function getPrice(uint256 interval) public view override returns (uint256) {
+    function getPrice(uint256 interval) external view override returns (uint256) {
         (uint128 value, uint128 timestamp) = _getOracleData();
         if (interval == 0) {
             return value;
