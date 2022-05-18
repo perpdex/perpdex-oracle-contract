@@ -1,12 +1,6 @@
-# perp-oracle-contract
+# perpdex-oracle-contract
 
-[![@perp/perp-oracle-contract on npm](https://img.shields.io/npm/v/@perp/perp-oracle-contract?style=flat-square)](https://www.npmjs.com/package/@perp/perp-oracle-contract)
-
-This repository contains the oracle smart contracts for [Perpetual Protocol Curie (v2)](https://perp.com/). For core contracts, see [perp-curie-contract](https://github.com/perpetual-protocol/perp-curie-contract).
-
-Contract source code is also published as npm package:
-
-- [@perp/perp-oracle-contract](https://www.npmjs.com/package/@perp/perp-oracle-contract)
+This repository contains the oracle smart contracts for [PerpDEX](https://perpdex.com/). For core contracts, see [perpdex-contract](https://github.com/perpdex/perpdex-contract).
 
 ## Local Development
 
@@ -28,4 +22,4 @@ npm run test
 
 ## Changelog
 
-See [CHANGELOG](https://github.com/perpetual-protocol/perp-oracle-contract/blob/main/CHANGELOG.md).
+See [CHANGELOG](CHANGELOG.md).
