@@ -8,7 +8,7 @@ import { FixedPoint96 } from "@uniswap/v3-core/contracts/libraries/FixedPoint96.
 import { FullMath } from "@uniswap/v3-core/contracts/libraries/FullMath.sol";
 import { IPriceFeed } from "./interface/IPriceFeed.sol";
 
-contract EmergencyPriceFeed is IPriceFeed {
+contract UniswapV3PriceFeed is IPriceFeed {
     using Address for address;
 
     //

@@ -4,37 +4,37 @@ import { expect } from "chai"
 import { BigNumber, BigNumberish } from "ethers"
 import { parseEther } from "ethers/lib/utils"
 import { ethers, waffle } from "hardhat"
-import { EmergencyPriceFeed, UniswapV3Pool } from "../typechain"
+import { UniswapV3Pool, UniswapV3PriceFeed } from "../typechain"
 
-interface EmergencyPriceFeedFixture {
-    emergencyPriceFeed: EmergencyPriceFeed
+interface UniswapV3PriceFeedFixture {
+    UniswapV3PriceFeed: UniswapV3PriceFeed
     uniswapV3Pool: FakeContract<UniswapV3Pool>
 }
 
-async function emergencyPriceFeedFixture(): Promise<EmergencyPriceFeedFixture> {
+async function UniswapV3PriceFeedFixture(): Promise<UniswapV3PriceFeedFixture> {
     const uniswapV3Pool = await smock.fake<UniswapV3Pool>("UniswapV3Pool")
 
-    const emergencyPriceFeedFactory = await ethers.getContractFactory("EmergencyPriceFeed")
-    const emergencyPriceFeed = (await emergencyPriceFeedFactory.deploy(uniswapV3Pool.address)) as EmergencyPriceFeed
+    const UniswapV3PriceFeedFactory = await ethers.getContractFactory("UniswapV3PriceFeed")
+    const UniswapV3PriceFeed = (await UniswapV3PriceFeedFactory.deploy(uniswapV3Pool.address)) as UniswapV3PriceFeed
 
-    return { emergencyPriceFeed, uniswapV3Pool }
+    return { UniswapV3PriceFeed, uniswapV3Pool }
 }
 
-describe("EmergencyPriceFeed Spec", () => {
+describe("UniswapV3PriceFeed Spec", () => {
     const [admin] = waffle.provider.getWallets()
     const loadFixture: ReturnType<typeof waffle.createFixtureLoader> = waffle.createFixtureLoader([admin])
-    let emergencyPriceFeed: EmergencyPriceFeed
+    let UniswapV3PriceFeed: UniswapV3PriceFeed
     let uniswapV3Pool: FakeContract<UniswapV3Pool>
 
     beforeEach(async () => {
-        const _fixture = await loadFixture(emergencyPriceFeedFixture)
-        emergencyPriceFeed = _fixture.emergencyPriceFeed
+        const _fixture = await loadFixture(UniswapV3PriceFeedFixture)
+        UniswapV3PriceFeed = _fixture.UniswapV3PriceFeed
         uniswapV3Pool = _fixture.uniswapV3Pool
     })
 
     describe("decimals", () => {
         it("return 18", async () => {
-            expect(await emergencyPriceFeed.decimals()).to.be.eq(18)
+            expect(await UniswapV3PriceFeed.decimals()).to.be.eq(18)
         })
     })
 
@@ -43,7 +43,7 @@ describe("EmergencyPriceFeed Spec", () => {
             const marketPrice = 100
             uniswapV3Pool.slot0.returns([encodePriceSqrtX96(marketPrice, 1), 0, 0, 0, 0, 0, false])
 
-            const indexPrice = await emergencyPriceFeed.getPrice()
+            const indexPrice = await UniswapV3PriceFeed.getPrice()
             expect(indexPrice).to.be.eq(parseEther(marketPrice.toString()))
         })
     })
