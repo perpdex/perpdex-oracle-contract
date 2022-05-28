@@ -6,11 +6,9 @@ import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { IUniswapV3Pool } from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import { FixedPoint96 } from "@uniswap/v3-core/contracts/libraries/FixedPoint96.sol";
 import { FullMath } from "@uniswap/v3-core/contracts/libraries/FullMath.sol";
-import { TickMath } from "@uniswap/v3-core/contracts/libraries/TickMath.sol";
 import { IPriceFeed } from "./interface/IPriceFeed.sol";
-import { BlockContext } from "./base/BlockContext.sol";
 
-contract EmergencyPriceFeed is IPriceFeed, BlockContext {
+contract UniswapV3PriceFeed is IPriceFeed {
     using Address for address;
 
     //
@@ -30,15 +28,14 @@ contract EmergencyPriceFeed is IPriceFeed, BlockContext {
         pool = poolArg;
     }
 
-    function cacheTwap(uint256 interval) external override returns (uint256) {}
-
     //
     // EXTERNAL VIEW
     //
 
-    function getPrice(uint256 interval) external view override returns (uint256) {
-        uint256 markTwapX96 = _formatSqrtPriceX96ToPriceX96(_getSqrtMarkTwapX96(_toUint32(interval)));
-        return _formatX96ToX10_18(markTwapX96);
+    function getPrice() external view override returns (uint256) {
+        (uint160 sqrtMarkPriceX96, , , , , , ) = IUniswapV3Pool(pool).slot0();
+        uint256 markPriceX96 = _formatSqrtPriceX96ToPriceX96(sqrtMarkPriceX96);
+        return _formatX96ToX10_18(markPriceX96);
     }
 
     //
@@ -47,25 +44,6 @@ contract EmergencyPriceFeed is IPriceFeed, BlockContext {
 
     function decimals() external pure override returns (uint8) {
         return 18;
-    }
-
-    /// @dev if twapInterval < 10 (should be less than 1 block), return mark price without twap directly,
-    ///      as twapInterval is too short and makes getting twap over such a short period meaningless
-    function _getSqrtMarkTwapX96(uint32 twapInterval) internal view returns (uint160) {
-        // return the current price as twapInterval is too short/ meaningless
-        if (twapInterval < 10) {
-            (uint160 sqrtMarkPrice, , , , , , ) = IUniswapV3Pool(pool).slot0();
-            return sqrtMarkPrice;
-        }
-        uint32[] memory secondsAgos = new uint32[](2);
-
-        // solhint-disable-next-line not-rely-on-time
-        secondsAgos[0] = twapInterval;
-        secondsAgos[1] = 0;
-        (int56[] memory tickCumulatives, ) = IUniswapV3Pool(pool).observe(secondsAgos);
-
-        // tick(imprecise as it's an integer) to price
-        return TickMath.getSqrtRatioAtTick(int24((tickCumulatives[1] - tickCumulatives[0]) / twapInterval));
     }
 
     /**
