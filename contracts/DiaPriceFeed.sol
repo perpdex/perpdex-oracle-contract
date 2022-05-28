@@ -3,12 +3,10 @@ pragma solidity 0.7.6;
 pragma experimental ABIEncoderV2;
 
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
-import { BlockContext } from "./base/BlockContext.sol";
 import { IPriceFeed } from "./interface/IPriceFeed.sol";
 import { IDIAOracleV2 } from "./interface/dia/IDIAOracleV2.sol";
-import { CachedTwap } from "./twap/CachedTwap.sol";
 
-contract DiaPriceFeed is IPriceFeed, BlockContext, CachedTwap {
+contract DiaPriceFeed is IPriceFeed {
     using Address for address;
 
     //
@@ -23,11 +21,7 @@ contract DiaPriceFeed is IPriceFeed, BlockContext, CachedTwap {
     // EXTERNAL NON-VIEW
     //
 
-    constructor(
-        IDIAOracleV2 oracleArg,
-        string memory oracleKeyArg,
-        uint80 cacheTwapInterval
-    ) CachedTwap(cacheTwapInterval) {
+    constructor(IDIAOracleV2 oracleArg, string memory oracleKeyArg) {
         // DPF_ANC: Reference address is not contract
         require(address(oracleArg).isContract(), "DPF_ANC");
 
@@ -35,30 +29,13 @@ contract DiaPriceFeed is IPriceFeed, BlockContext, CachedTwap {
         oracleKey = oracleKeyArg;
     }
 
-    /// @dev anyone can help update it.
-    function update() external {
-        (uint128 value, uint128 timestamp) = _getOracleData();
-        _update(value, timestamp);
-    }
-
-    function cacheTwap(uint256 interval) external override returns (uint256) {
-        (uint128 value, uint128 timestamp) = _getOracleData();
-        if (interval == 0) {
-            return value;
-        }
-        return _cacheTwap(interval, value, timestamp);
-    }
-
     //
     // EXTERNAL VIEW
     //
 
-    function getPrice(uint256 interval) external view override returns (uint256) {
-        (uint128 value, uint128 timestamp) = _getOracleData();
-        if (interval == 0) {
-            return value;
-        }
-        return _getCachedTwap(interval, value, timestamp);
+    function getPrice() external view override returns (uint256) {
+        (uint128 value, ) = _getOracleData();
+        return value;
     }
 
     //
