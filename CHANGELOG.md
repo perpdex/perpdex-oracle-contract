@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+- Remove TWAP calculation from PriceFeed contracts
+- Rename `EmergencyPriceFeed` to `UniswapV3PriceFeed`
+
 ## [0.3.3] - 2022-03-18
 
 ### Changed
