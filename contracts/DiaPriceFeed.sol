@@ -3,10 +3,10 @@ pragma solidity 0.7.6;
 pragma experimental ABIEncoderV2;
 
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
-import { IPriceFeed } from "./interface/IPriceFeed.sol";
+import { IPerpdexPriceFeed } from "./interface/IPerpdexPriceFeed.sol";
 import { IDIAOracleV2 } from "./interface/dia/IDIAOracleV2.sol";
 
-contract DiaPriceFeed is IPriceFeed {
+contract DiaPriceFeed is IPerpdexPriceFeed {
     using Address for address;
 
     //

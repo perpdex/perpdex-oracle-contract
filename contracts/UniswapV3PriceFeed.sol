@@ -6,9 +6,9 @@ import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { IUniswapV3Pool } from "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import { FixedPoint96 } from "@uniswap/v3-core/contracts/libraries/FixedPoint96.sol";
 import { FullMath } from "@uniswap/v3-core/contracts/libraries/FullMath.sol";
-import { IPriceFeed } from "./interface/IPriceFeed.sol";
+import { IPerpdexPriceFeed } from "./interface/IPerpdexPriceFeed.sol";
 
-contract UniswapV3PriceFeed is IPriceFeed {
+contract UniswapV3PriceFeed is IPerpdexPriceFeed {
     using Address for address;
 
     //
