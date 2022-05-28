@@ -46,20 +46,6 @@ contract UniswapV3PriceFeed is IPerpdexPriceFeed {
         return 18;
     }
 
-    /**
-     * @dev Returns the downcasted uint32 from uint256, reverting on
-     * overflow (when the input is greater than largest uint32).
-     *
-     * Counterpart to Solidity's `uint32` operator.
-     *
-     * Requirements:
-     *
-     * - input must fit into 32 bits
-     */
-    function _toUint32(uint256 value) internal pure returns (uint32 returnValue) {
-        require(((returnValue = uint32(value)) == value), "SafeCast: value doesn't fit in 32 bits");
-    }
-
     function _formatSqrtPriceX96ToPriceX96(uint160 sqrtPriceX96) internal pure returns (uint256) {
         return FullMath.mulDiv(sqrtPriceX96, sqrtPriceX96, FixedPoint96.Q96);
     }
