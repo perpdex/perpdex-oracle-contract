@@ -3,9 +3,9 @@ pragma solidity 0.7.6;
 
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
-import { IPriceFeed } from "./interface/IPriceFeed.sol";
+import { IPerpdexPriceFeed } from "./interface/IPerpdexPriceFeed.sol";
 
-contract ChainlinkPriceFeed is IPriceFeed {
+contract ChainlinkPriceFeed is IPerpdexPriceFeed {
     using Address for address;
 
     AggregatorV3Interface private immutable _aggregator;
