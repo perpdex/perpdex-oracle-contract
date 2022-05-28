@@ -33,26 +33,18 @@ describe("EmergencyPriceFeed Spec", () => {
     })
 
     describe("decimals", () => {
-        it("decimals should be 18", async () => {
+        it("return 18", async () => {
             expect(await emergencyPriceFeed.decimals()).to.be.eq(18)
         })
     })
 
     describe("getPrice", () => {
-        it("return current market price when interval < 10", async () => {
+        it("return current market price", async () => {
             const marketPrice = 100
             uniswapV3Pool.slot0.returns([encodePriceSqrtX96(marketPrice, 1), 0, 0, 0, 0, 0, false])
 
-            const indexPrice = await emergencyPriceFeed.getPrice(0)
+            const indexPrice = await emergencyPriceFeed.getPrice()
             expect(indexPrice).to.be.eq(parseEther(marketPrice.toString()))
-        })
-
-        it("twap", async () => {
-            uniswapV3Pool.observe.returns([[BigNumber.from(0), BigNumber.from(41400000)], []])
-            // twapTick = (41400000-0) / 900 = 46000
-            // twap = 1.0001^46000 = 99.4614384055
-            const indexPrice = await emergencyPriceFeed.getPrice(900)
-            expect(indexPrice).to.be.eq(parseEther("99.461438405455592365"))
         })
     })
 })
@@ -68,12 +60,4 @@ export function encodePriceSqrtX96(reserve1: BigNumberish, reserve0: BigNumberis
             .integerValue(3)
             .toString(),
     )
-}
-
-function bigNumberToBig(val: BigNumber, decimals: number = 18): bn {
-    return new bn(val.toString()).div(new bn(10).pow(decimals))
-}
-
-export function formatSqrtPriceX96ToPrice(value: BigNumber, decimals: number = 18): string {
-    return bigNumberToBig(value, 0).div(new bn(2).pow(96)).pow(2).dp(decimals).toString()
 }
