@@ -14,7 +14,7 @@ async function chainlinkPriceFeedFixture(): Promise<ChainlinkPriceFeedFixture> {
     aggregator.decimals.returns(() => 18)
 
     const chainlinkPriceFeedFactory = await ethers.getContractFactory("ChainlinkPriceFeed")
-    const chainlinkPriceFeed = (await chainlinkPriceFeedFactory.deploy(aggregator.address, 900)) as ChainlinkPriceFeed
+    const chainlinkPriceFeed = (await chainlinkPriceFeedFactory.deploy(aggregator.address)) as ChainlinkPriceFeed
 
     return { chainlinkPriceFeed, aggregator }
 }
@@ -32,8 +32,6 @@ describe("ChainlinkPriceFeed Spec", () => {
         aggregator.latestRoundData.returns(() => {
             return roundData[roundData.length - 1]
         })
-        await chainlinkPriceFeed.update()
-
         if (forward) {
             currentTime += 15
             await ethers.provider.send("evm_setNextBlockTimestamp", [currentTime])
@@ -67,17 +65,6 @@ describe("ChainlinkPriceFeed Spec", () => {
             await updatePrice(0, 400, false)
             await updatePrice(1, 405, false)
             await updatePrice(2, 410, false)
-            // // have the same timestamp for rounds
-            // roundData.push([0, parseEther("400"), currentTime, currentTime, 0])
-            // roundData.push([1, parseEther("405"), currentTime, currentTime, 1])
-            // roundData.push([2, parseEther("410"), currentTime, currentTime, 2])
-
-            // aggregator.latestRoundData.returns(() => {
-            //     return roundData[roundData.length - 1]
-            // })
-            // aggregator.getRoundData.returns(round => {
-            //     return roundData[round]
-            // })
 
             currentTime += 15
             await ethers.provider.send("evm_setNextBlockTimestamp", [currentTime])
@@ -85,12 +72,7 @@ describe("ChainlinkPriceFeed Spec", () => {
         })
 
         it("get the latest price", async () => {
-            const price = await chainlinkPriceFeed.getPrice(45)
-            expect(price).to.eq(parseEther("410"))
-        })
-
-        it("asking interval more than aggregator has", async () => {
-            const price = await chainlinkPriceFeed.getPrice(46)
+            const price = await chainlinkPriceFeed.getPrice()
             expect(price).to.eq(parseEther("410"))
         })
     })

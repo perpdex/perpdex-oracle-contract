@@ -4,49 +4,26 @@ pragma solidity 0.7.6;
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import { IPriceFeed } from "./interface/IPriceFeed.sol";
-import { BlockContext } from "./base/BlockContext.sol";
-import { CachedTwap } from "./twap/CachedTwap.sol";
 
-contract ChainlinkPriceFeed is IPriceFeed, BlockContext, CachedTwap {
+contract ChainlinkPriceFeed is IPriceFeed {
     using Address for address;
 
     AggregatorV3Interface private immutable _aggregator;
 
-    constructor(AggregatorV3Interface aggregator, uint80 cacheTwapInterval) CachedTwap(cacheTwapInterval) {
+    constructor(AggregatorV3Interface aggregator) {
         // CPF_ANC: Aggregator address is not contract
         require(address(aggregator).isContract(), "CPF_ANC");
 
         _aggregator = aggregator;
     }
 
-    /// @dev anyone can help update it.
-    function update() external {
-        (, uint256 latestPrice, uint256 latestTimestamp) = _getLatestRoundData();
-
-        _update(latestPrice, latestTimestamp);
-    }
-
-    function cacheTwap(uint256 interval) external override returns (uint256) {
-        (uint80 round, uint256 latestPrice, uint256 latestTimestamp) = _getLatestRoundData();
-
-        if (interval == 0 || round == 0) {
-            return latestPrice;
-        }
-        return _cacheTwap(interval, latestPrice, latestTimestamp);
-    }
-
     function decimals() external view override returns (uint8) {
         return _aggregator.decimals();
     }
 
-    function getPrice(uint256 interval) external view override returns (uint256) {
-        (uint80 round, uint256 latestPrice, uint256 latestTimestamp) = _getLatestRoundData();
-
-        if (interval == 0 || round == 0) {
-            return latestPrice;
-        }
-
-        return _getCachedTwap(interval, latestPrice, latestTimestamp);
+    function getPrice() external view override returns (uint256) {
+        (, uint256 latestPrice, ) = _getLatestRoundData();
+        return latestPrice;
     }
 
     function _getLatestRoundData()
