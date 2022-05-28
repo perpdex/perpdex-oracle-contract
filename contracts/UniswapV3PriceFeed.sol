@@ -15,7 +15,7 @@ contract UniswapV3PriceFeed is IPerpdexPriceFeed {
     // STATE
     //
 
-    address public pool;
+    address public immutable pool;
 
     //
     // EXTERNAL NON-VIEW

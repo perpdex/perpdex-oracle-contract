@@ -8,7 +8,7 @@ import { IPerpdexPriceFeed } from "./interface/IPerpdexPriceFeed.sol";
 contract ChainlinkPriceFeed is IPerpdexPriceFeed {
     using Address for address;
 
-    AggregatorV3Interface private immutable _aggregator;
+    AggregatorV3Interface public immutable _aggregator;
 
     constructor(AggregatorV3Interface aggregator) {
         // CPF_ANC: Aggregator address is not contract

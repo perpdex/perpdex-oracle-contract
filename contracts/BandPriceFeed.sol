@@ -15,7 +15,7 @@ contract BandPriceFeed is IPerpdexPriceFeed {
     string public constant QUOTE_ASSET = "USD";
 
     string public baseAsset;
-    IStdReference public stdRef;
+    IStdReference public immutable stdRef;
 
     //
     // EXTERNAL NON-VIEW

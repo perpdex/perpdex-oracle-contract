@@ -14,7 +14,7 @@ contract DiaPriceFeed is IPerpdexPriceFeed {
     //
     string public constant QUOTE_ASSET = "USD";
 
-    IDIAOracleV2 public oracle;
+    IDIAOracleV2 public immutable oracle;
     string public oracleKey;
 
     //
