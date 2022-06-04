@@ -2,6 +2,18 @@
 
 This repository contains the oracle smart contracts for [PerpDEX](https://perpdex.com/). For core contracts, see [perpdex-contract](https://github.com/perpdex/perpdex-contract).
 
+## deploy
+
+```bash
+npx hardhat deploy --network rinkeby
+```
+
+## verify
+
+```bash
+npx hardhat etherscan-verify --network rinkeby --force-license --license GPL-3.0
+```
+
 ## Local Development
 
 You need Node.js 16+ to build. Use [nvm](https://github.com/nvm-sh/nvm) to install it.
