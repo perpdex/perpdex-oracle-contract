@@ -22,8 +22,7 @@ contract DiaPriceFeed is IPerpdexPriceFeed {
     //
 
     constructor(IDIAOracleV2 oracleArg, string memory oracleKeyArg) {
-        // DPF_ANC: Reference address is not contract
-        require(address(oracleArg).isContract(), "DPF_ANC");
+        require(address(oracleArg).isContract(), "DPF_C: ref address not contract");
 
         oracle = oracleArg;
         oracleKey = oracleKeyArg;
@@ -54,10 +53,8 @@ contract DiaPriceFeed is IPerpdexPriceFeed {
 
     function _getOracleData() internal view returns (uint128, uint128) {
         (uint128 value, uint128 timestamp) = oracle.getValue(oracleKey);
-        // DPF_TZ: timestamp is zero
-        require(timestamp > 0, "DPF_TZ");
-        // DPF_IP: invalid price
-        require(value > 0, "DPF_IP");
+        require(timestamp > 0, "DPF_GOD: time is zero");
+        require(value > 0, "DPF_GOD: invalid price");
 
         return (value, timestamp);
     }

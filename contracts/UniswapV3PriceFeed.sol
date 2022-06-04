@@ -22,8 +22,7 @@ contract UniswapV3PriceFeed is IPerpdexPriceFeed {
     //
 
     constructor(address poolArg) {
-        // EPF_EANC: pool address is not contract
-        require(address(poolArg).isContract(), "EPF_EANC");
+        require(address(poolArg).isContract(), "UVPF_C: pool is not contract");
 
         pool = poolArg;
     }

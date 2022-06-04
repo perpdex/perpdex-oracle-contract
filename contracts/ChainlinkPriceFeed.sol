@@ -8,17 +8,16 @@ import { IPerpdexPriceFeed } from "./interface/IPerpdexPriceFeed.sol";
 contract ChainlinkPriceFeed is IPerpdexPriceFeed {
     using Address for address;
 
-    AggregatorV3Interface public immutable _aggregator;
+    AggregatorV3Interface public immutable aggregator;
 
-    constructor(AggregatorV3Interface aggregator) {
-        // CPF_ANC: Aggregator address is not contract
-        require(address(aggregator).isContract(), "CPF_ANC");
+    constructor(AggregatorV3Interface aggregatorArg) {
+        require(address(aggregatorArg).isContract(), "CPF_C: agg address not contract");
 
-        _aggregator = aggregator;
+        aggregator = aggregatorArg;
     }
 
     function decimals() external view override returns (uint8) {
-        return _aggregator.decimals();
+        return aggregator.decimals();
     }
 
     function getPrice() external view override returns (uint256) {
@@ -35,7 +34,7 @@ contract ChainlinkPriceFeed is IPerpdexPriceFeed {
             uint256
         )
     {
-        (uint80 round, int256 latestPrice, , uint256 latestTimestamp, ) = _aggregator.latestRoundData();
+        (uint80 round, int256 latestPrice, , uint256 latestTimestamp, ) = aggregator.latestRoundData();
         finalPrice = uint256(latestPrice);
         if (latestPrice < 0) {
             _requireEnoughHistory(round);
@@ -53,17 +52,16 @@ contract ChainlinkPriceFeed is IPerpdexPriceFeed {
             uint256
         )
     {
-        (uint80 round, int256 latestPrice, , uint256 latestTimestamp, ) = _aggregator.getRoundData(_round);
+        (uint80 round, int256 latestPrice, , uint256 latestTimestamp, ) = aggregator.getRoundData(_round);
         while (latestPrice < 0) {
             _requireEnoughHistory(round);
             round = round - 1;
-            (, latestPrice, , latestTimestamp, ) = _aggregator.getRoundData(round);
+            (, latestPrice, , latestTimestamp, ) = aggregator.getRoundData(round);
         }
         return (round, uint256(latestPrice), latestTimestamp);
     }
 
     function _requireEnoughHistory(uint80 _round) private pure {
-        // CPF_NEH: no enough history
-        require(_round > 0, "CPF_NEH");
+        require(_round > 0, "CPF_REH: no enough history");
     }
 }
