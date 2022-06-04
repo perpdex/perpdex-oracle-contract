@@ -22,8 +22,7 @@ contract BandPriceFeed is IPerpdexPriceFeed {
     //
 
     constructor(IStdReference stdRefArg, string memory baseAssetArg) {
-        // BPF_ANC: Reference address is not contract
-        require(address(stdRefArg).isContract(), "BPF_ANC");
+        require(address(stdRefArg).isContract(), "BPF_C: ref address not contract");
 
         stdRef = stdRefArg;
         baseAsset = baseAssetArg;
@@ -54,12 +53,9 @@ contract BandPriceFeed is IPerpdexPriceFeed {
 
     function _getReferenceData() internal view returns (IStdReference.ReferenceData memory) {
         IStdReference.ReferenceData memory bandData = stdRef.getReferenceData(baseAsset, QUOTE_ASSET);
-        // BPF_TQZ: timestamp for quote is zero
-        require(bandData.lastUpdatedQuote > 0, "BPF_TQZ");
-        // BPF_TBZ: timestamp for base is zero
-        require(bandData.lastUpdatedBase > 0, "BPF_TBZ");
-        // BPF_IP: invalid price
-        require(bandData.rate > 0, "BPF_IP");
+        require(bandData.lastUpdatedQuote > 0, "BPF_GRD: quote time is zero");
+        require(bandData.lastUpdatedBase > 0, "BPF_GRD: base time is zero");
+        require(bandData.rate > 0, "BPF_GRD: invalid price");
 
         return bandData;
     }

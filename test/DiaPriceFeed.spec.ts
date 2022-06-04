@@ -62,8 +62,8 @@ describe("DiaPriceFeed Spec", () => {
 
     describe("getPrice", () => {
         describe("when price is not updated yet", () => {
-            it("revert with DPF_TZ", async () => {
-                await expect(diaPriceFeed.getPrice()).to.be.revertedWith("DPF_TZ")
+            it("revert", async () => {
+                await expect(diaPriceFeed.getPrice()).to.be.revertedWith("DPF_GOD: time is zero")
             })
         })
 
@@ -72,8 +72,8 @@ describe("DiaPriceFeed Spec", () => {
                 await setCurrentTimeToLatest()
                 await updatePrice(0, false)
             })
-            it("revert with DPF_IP", async () => {
-                await expect(diaPriceFeed.getPrice()).to.be.revertedWith("DPF_IP")
+            it("revert", async () => {
+                await expect(diaPriceFeed.getPrice()).to.be.revertedWith("DPF_GOD: invalid price")
             })
         })
 
