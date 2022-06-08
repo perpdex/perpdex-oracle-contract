@@ -78,6 +78,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
                     'DIA/USD'
                 ]
             },
+            {
+                contract: 'DiaPriceFeed',
+                symbol: 'ASTRUSD',
+                args: [
+                    '0x1232AcD632Dd75f874E357c77295Da3f5Cd7733E',
+                    'ASTR/USD'
+                ]
+            },
         ],
         mumbai: [ // ETH mumbai
             {
