@@ -8,14 +8,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     const { deployer } = await getNamedAccounts()
 
     const configs = {
-        "31337": [ // hardhat (ETH mainnet)
+        hardhat: [ // hardhat (ETH mainnet)
             {
                 contract: 'ChainlinkPriceFeed',
                 symbol: 'ETHUSD',
                 args: ['0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419']
             }
         ],
-        "4": [ // ETH rinkeby
+        rinkeby: [ // ETH rinkeby
             {
                 contract: 'ChainlinkPriceFeed',
                 symbol: 'ETHUSD',
@@ -37,21 +37,63 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
                 args: ['0xd8bD0a1cB028a31AA859A21A3758685a95dE4623']
             },
         ],
-        "80001": [ // ETH mumbai
+        shibuya: [ // astar shibuya https://docs.diadata.org/documentation/oracle-documentation/deployed-contracts
+            {
+                contract: 'DiaPriceFeed',
+                symbol: 'BTCUSD',
+                args: [
+                    '0x1232AcD632Dd75f874E357c77295Da3f5Cd7733E',
+                    'BTC/USD'
+                ]
+            },
+            {
+                contract: 'DiaPriceFeed',
+                symbol: 'ETHUSD',
+                args: [
+                    '0x1232AcD632Dd75f874E357c77295Da3f5Cd7733E',
+                    'ETH/USD'
+                ]
+            },
+            {
+                contract: 'DiaPriceFeed',
+                symbol: 'KSMUSD',
+                args: [
+                    '0x1232AcD632Dd75f874E357c77295Da3f5Cd7733E',
+                    'KSM/USD'
+                ]
+            },
+            {
+                contract: 'DiaPriceFeed',
+                symbol: 'SDNUSD',
+                args: [
+                    '0x1232AcD632Dd75f874E357c77295Da3f5Cd7733E',
+                    'SDN/USD'
+                ]
+            },
+            {
+                contract: 'DiaPriceFeed',
+                symbol: 'DIAUSD',
+                args: [
+                    '0x1232AcD632Dd75f874E357c77295Da3f5Cd7733E',
+                    'DIA/USD'
+                ]
+            },
+        ],
+        mumbai: [ // ETH mumbai
             {
                 contract: 'ChainlinkPriceFeed',
                 symbol: 'ETHUSD',
                 args: ['0x0715A7794a1dc8e42615F059dD6e406A6594651A']
             }
         ],
-        "43113": [ // AVAX fuji
+        fuji: [ // AVAX fuji
             {
                 contract: 'ChainlinkPriceFeed',
                 symbol: 'AVAXUSD',
                 args: ['0x0A77230d17318075983913bC2145DB16C7366156']
             }
         ]
-    }[await getChainId()]
+    }[hre.network.name]
 
     for (let i = 0; i < configs.length; i++) {
         const config = configs[i]
