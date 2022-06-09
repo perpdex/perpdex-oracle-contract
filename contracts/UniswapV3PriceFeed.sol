@@ -8,6 +8,7 @@ import { FixedPoint96 } from "@uniswap/v3-core/contracts/libraries/FixedPoint96.
 import { FullMath } from "@uniswap/v3-core/contracts/libraries/FullMath.sol";
 import { IPerpdexPriceFeed } from "./interface/IPerpdexPriceFeed.sol";
 
+// TODO: support different token decimals like USDC
 contract UniswapV3PriceFeed is IPerpdexPriceFeed {
     using Address for address;
 
