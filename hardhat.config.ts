@@ -8,6 +8,7 @@ import { HardhatUserConfig } from "hardhat/config"
 import { config as dotenvConfig } from "dotenv"
 import "solidity-coverage"
 import { resolve } from "path"
+import "@matterlabs/hardhat-zksync-solc"
 
 dotenvConfig({ path: resolve(__dirname, "./.env") })
 
@@ -25,6 +26,18 @@ const config: HardhatUserConfig = {
             },
         },
     },
+    zksolc: {
+        version: "0.1.0",
+        compilerSource: "docker",
+        settings: {
+            optimizer: {
+                enabled: true,
+            },
+            experimental: {
+                dockerImage: "matterlabs/zksolc",
+            },
+        },
+    },
     namedAccounts: {
         deployer: 0,
     },
@@ -35,7 +48,10 @@ const config: HardhatUserConfig = {
     },
     dependencyCompiler: {
         // We have to compile from source since UniswapV3 doesn't provide artifacts in their npm package
-        paths: ["@uniswap/v3-core/contracts/UniswapV3Factory.sol", "@uniswap/v3-core/contracts/UniswapV3Pool.sol"],
+        // paths: [
+        //     "@uniswap/v3-core/contracts/UniswapV3Factory.sol",
+        //     "@uniswap/v3-core/contracts/UniswapV3Pool.sol",
+        // ],
     },
     gasReporter: {
         enabled: true,
@@ -85,6 +101,7 @@ if (process.env.TESTNET_PRIVATE_KEY) {
                 apiUrl: "https://zksync2-testnet.zkscan.io/",
             },
         },
+        zksync: true,
     }
 }
 
