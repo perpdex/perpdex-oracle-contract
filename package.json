@@ -87,6 +87,12 @@
     "*.ts": [
       "prettier --write"
     ],
+    "*.md": [
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ],
     "*.sol": [
       "prettier --write",
       "solhint"
