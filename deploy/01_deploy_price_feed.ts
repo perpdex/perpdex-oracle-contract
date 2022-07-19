@@ -88,6 +88,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
                 args: ["0x0A77230d17318075983913bC2145DB16C7366156"],
             },
         ],
+        zksync2_testnet: [
+            // use scripts/univ2_survey.ts to get addresses
+            {
+                contract: "UniswapV2PriceFeed",
+                symbol: "ETHUSD",
+                args: ["0xE9ea01488213269fDE4260B09e60faC36C971AD5", true],
+            },
+        ],
     }[hre.network.name]
 
     for (let i = 0; i < configs.length; i++) {
