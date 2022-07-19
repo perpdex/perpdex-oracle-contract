@@ -7,7 +7,7 @@ import "hardhat-gas-reporter"
 import { HardhatUserConfig } from "hardhat/config"
 import { config as dotenvConfig } from "dotenv"
 import "solidity-coverage"
-import {resolve} from "path";
+import { resolve } from "path"
 
 dotenvConfig({ path: resolve(__dirname, "./.env") })
 
@@ -70,9 +70,9 @@ if (process.env.TESTNET_PRIVATE_KEY) {
         gasMultiplier: 2,
         verify: {
             etherscan: {
-                apiUrl: 'https://blockscout.com/shibuya'
-            }
-        }
+                apiUrl: "https://blockscout.com/shibuya",
+            },
+        },
     }
 }
 
