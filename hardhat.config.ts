@@ -46,13 +46,6 @@ const config: HardhatUserConfig = {
             allowUnlimitedContractSize: true,
         },
     },
-    dependencyCompiler: {
-        // We have to compile from source since UniswapV3 doesn't provide artifacts in their npm package
-        // paths: [
-        //     "@uniswap/v3-core/contracts/UniswapV3Factory.sol",
-        //     "@uniswap/v3-core/contracts/UniswapV3Pool.sol",
-        // ],
-    },
     gasReporter: {
         enabled: true,
     },
