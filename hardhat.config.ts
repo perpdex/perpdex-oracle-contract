@@ -74,6 +74,18 @@ if (process.env.TESTNET_PRIVATE_KEY) {
             },
         },
     }
+
+    config.networks.zksync2_testnet = {
+        url: "https://zksync2-testnet.zksync.dev",
+        chainId: 280,
+        accounts: [process.env.TESTNET_PRIVATE_KEY],
+        gasMultiplier: 2,
+        verify: {
+            etherscan: {
+                apiUrl: "https://zksync2-testnet.zkscan.io/",
+            },
+        },
+    }
 }
 
 export default config
