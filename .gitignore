@@ -10,3 +10,5 @@ slither
 .idea
 contracts/hardhat-dependency-compiler/*
 .env*
+artifacts-zk
+cache-zk
