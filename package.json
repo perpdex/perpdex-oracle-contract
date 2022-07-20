@@ -97,6 +97,9 @@
     "*.json": [
       "prettier --write"
     ],
+    "*.yml": [
+      "prettier --write"
+    ],
     "*.sol": [
       "prettier --write",
       "solhint"
