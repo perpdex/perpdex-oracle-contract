@@ -12,14 +12,14 @@ jobs:
         steps:
             - uses: actions/checkout@v2
               with:
-                persist-credentials: false
+                  persist-credentials: false
 
             # fix SSH error: git@github.com: Permission denied (publickey).
             # copy from https://github.com/actions/setup-node/issues/214#issuecomment-810829250
             - name: Reconfigure git to use HTTP authentication
               run: >
-                git config --global url."https://github.com/".insteadOf
-                ssh://git@github.com/
+                  git config --global url."https://github.com/".insteadOf
+                  ssh://git@github.com/
 
             - name: Get npm cache directory
               id: npm-cache
@@ -38,24 +38,24 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: 16.x
-                  registry-url: 'https://registry.npmjs.org'
+                  registry-url: "https://registry.npmjs.org"
 
             - name: Install contract dependencies
               run: npm ci
               env:
-                CI: true
+                  CI: true
 
             - name: Build contract package
               run: npm run build
               env:
-                CI: true
+                  CI: true
 
             - name: Publish npm package
               run: |
-                npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-                npm publish --access public
+                  npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+                  npm publish --access public
               env:
-                NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Discord notification
               env:
