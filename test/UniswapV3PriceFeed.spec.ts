@@ -4,15 +4,15 @@ import { expect } from "chai"
 import { BigNumber, BigNumberish } from "ethers"
 import { parseEther } from "ethers/lib/utils"
 import { ethers, waffle } from "hardhat"
-import { UniswapV3Pool, UniswapV3PriceFeed } from "../typechain"
+import { IUniswapV3Pool, UniswapV3PriceFeed } from "../typechain"
 
 interface UniswapV3PriceFeedFixture {
     UniswapV3PriceFeed: UniswapV3PriceFeed
-    uniswapV3Pool: FakeContract<UniswapV3Pool>
+    uniswapV3Pool: FakeContract<IUniswapV3Pool>
 }
 
 async function UniswapV3PriceFeedFixture(): Promise<UniswapV3PriceFeedFixture> {
-    const uniswapV3Pool = await smock.fake<UniswapV3Pool>("UniswapV3Pool")
+    const uniswapV3Pool = await smock.fake<IUniswapV3Pool>("IUniswapV3Pool")
 
     const UniswapV3PriceFeedFactory = await ethers.getContractFactory("UniswapV3PriceFeed")
     const UniswapV3PriceFeed = (await UniswapV3PriceFeedFactory.deploy(uniswapV3Pool.address)) as UniswapV3PriceFeed
@@ -24,7 +24,7 @@ describe("UniswapV3PriceFeed Spec", () => {
     const [admin] = waffle.provider.getWallets()
     const loadFixture: ReturnType<typeof waffle.createFixtureLoader> = waffle.createFixtureLoader([admin])
     let UniswapV3PriceFeed: UniswapV3PriceFeed
-    let uniswapV3Pool: FakeContract<UniswapV3Pool>
+    let uniswapV3Pool: FakeContract<IUniswapV3Pool>
 
     beforeEach(async () => {
         const _fixture = await loadFixture(UniswapV3PriceFeedFixture)
