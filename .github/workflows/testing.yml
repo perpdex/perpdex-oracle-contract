@@ -84,7 +84,8 @@ jobs:
 
       - name: Build contract package
         run: npm run build-zksync
-
+        env:
+          TESTNET_PRIVATE_KEY: 0000000000000000000000000000000000000000000000000000000000000000
 
   coverage:
     runs-on: ubuntu-latest
