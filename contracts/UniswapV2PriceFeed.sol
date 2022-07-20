@@ -6,7 +6,7 @@ import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import { IERC20 } from "@uniswap/v2-core/contracts/interfaces/IERC20.sol";
 import { IUniswapV2Pair } from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
-import { FullMath } from "@uniswap/v3-core/contracts/libraries/FullMath.sol";
+import { PRBMath } from "prb-math/contracts/PRBMath.sol";
 import { IPerpdexPriceFeed } from "./interface/IPerpdexPriceFeed.sol";
 
 contract UniswapV2PriceFeed is IPerpdexPriceFeed {
@@ -29,9 +29,9 @@ contract UniswapV2PriceFeed is IPerpdexPriceFeed {
     function getPrice() external view override returns (uint256) {
         (uint256 reserve0, uint256 reserve1, ) = IUniswapV2Pair(pair).getReserves();
         if (inverse) {
-            return FullMath.mulDiv(reserve1, priceScale, reserve0);
+            return PRBMath.mulDiv(reserve1, priceScale, reserve0);
         } else {
-            return FullMath.mulDiv(reserve0, priceScale, reserve1);
+            return PRBMath.mulDiv(reserve0, priceScale, reserve1);
         }
     }
 
